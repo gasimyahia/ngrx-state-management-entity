@@ -37,7 +37,7 @@ export class EditComponent implements OnInit , OnDestroy{
   initPostForm(){
     this.postForm=new FormGroup({
       title:new FormControl(this.post.title,[Validators.required,Validators.minLength(6)]),
-      desc:new FormControl(this.post.desc,[Validators.required,Validators.minLength(10)]),
+      desc:new FormControl(this.post.description,[Validators.required,Validators.minLength(10)]),
     });
   }
 
@@ -49,7 +49,7 @@ export class EditComponent implements OnInit , OnDestroy{
     let post:Post={
       id:this.post.id,
       title:this.postForm.value.title,
-      desc:this.postForm.value.desc
+      description:this.postForm.value.desc
     }
 
     this.store.dispatch(updatePost({post}));

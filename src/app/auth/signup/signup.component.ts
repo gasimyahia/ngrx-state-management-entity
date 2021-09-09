@@ -3,37 +3,39 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { setLoadingSpinner } from 'src/app/share/component/state/shared.actions';
 import { AppState } from 'src/app/store/app.state';
-import { loginStart } from '../state/auth.actions';
+import { signupStart } from '../state/auth.actions';
+import { AuthState } from '../state/auth.state';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: 'app-signup',
+  templateUrl: './signup.component.html',
+  styleUrls: ['./signup.component.css']
 })
-export class LoginComponent implements OnInit {
-  loginForm:FormGroup;
+export class SignupComponent implements OnInit {
+  signupForm:FormGroup;
 
   constructor(private store:Store<AppState>) { }
 
   ngOnInit(): void {
-    this.initPostForm();
+    this.initSignupForm();
   }
 
-  initPostForm(){
-    this.loginForm=new FormGroup({
+  initSignupForm(){
+    this.signupForm=new FormGroup({
       email:new FormControl(null,[Validators.required,Validators.email]),
       password:new FormControl(null,[Validators.required]),
     });
   }
 
-  onLogin(){
-    if(this.loginForm.invalid){
+  onSignUp(){
+    if(this.signupForm.invalid){
       return;
     }
-    const email=this.loginForm.value.email;
-    const password=this.loginForm.value.password;
+
+    const email=this.signupForm.value.email;
+    const password=this.signupForm.value.password;
     this.store.dispatch(setLoadingSpinner({status:true}));
-    this.store.dispatch(loginStart({email,password}))
+    this.store.dispatch(signupStart({email,password}));
   }
 
 }

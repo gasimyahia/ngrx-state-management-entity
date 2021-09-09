@@ -2,10 +2,12 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule, Routes } from '@angular/router';
+import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { AddPostComponent } from "./add-post/add-post.component";
 import { EditComponent } from "./edit/edit.component";
 import { PostListComponent } from "./post-list/post-list.component";
+import { PostsEffects } from "./state/posts.effects";
 import { postsReducer } from "./state/posts.reducer";
 import { POST_STATE_NAME } from "./state/posts.selector";
 
@@ -30,7 +32,8 @@ export const routes: Routes = [
     ReactiveFormsModule,
     RouterModule.forChild(routes),
     StoreModule.forFeature(POST_STATE_NAME,postsReducer),
-    FormsModule
+    FormsModule,
+    EffectsModule.forFeature([PostsEffects])
   ],
 
 })
