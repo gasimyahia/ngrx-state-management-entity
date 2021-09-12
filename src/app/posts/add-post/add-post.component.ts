@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { Post } from 'src/app/models/posts.model';
 import { AppState } from 'src/app/store/app.state';
 import { addPost } from '../state/posts.actions';
+import { getPosts } from '../state/posts.selector';
 
 @Component({
   selector: 'app-add-post',
@@ -44,12 +45,25 @@ export class AddPostComponent implements OnInit {
     if(!this.postForm.valid){
       return;
     }
+    let posts:Post[]=this.getPostsData();
+    // let oldid:string=posts[posts.length - 1].id;
+    // let id:string= (+oldid + 1).toString();
+
     const post: Post ={
+      // id: (+(posts[posts.length - 1].id)+1).toString(),
       title: this.postForm.value.title,
       description: this.postForm.value.desc
     };
 
     this.store.dispatch(addPost({post}));
   }
+
+  getPostsData():Post[]{
+    let dat:Post[];
+    this.store.select(getPosts).subscribe((data)=>{
+    dat=data;
+    });
+    return dat;
+   }
 
 }

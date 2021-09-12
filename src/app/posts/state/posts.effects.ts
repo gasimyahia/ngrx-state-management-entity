@@ -1,13 +1,20 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { map, mergeMap } from "rxjs/operators";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
+import { map, mergeMap, switchMap } from "rxjs/operators";
+import { Post } from "src/app/models/posts.model";
 import { postsService } from "src/app/service/posts.service";
-import { addPost, loadPosts, loadPostsSuccess } from "./posts.actions";
+import { AppState } from "src/app/store/app.state";
+import { addPost, addPostSuccess, deletePost, deletePostSuccess, loadPosts, loadPostsSuccess, updatePost, updatePostSuccess } from "./posts.actions";
 
 @Injectable()
 
 export class PostsEffects{
-  constructor(private actions$:Actions,private postsService:postsService){}
+  posts:Observable<Post[]>;
+  constructor(private actions$:Actions,private postsService:postsService,private store:Store<AppState>){
+
+  }
 
   loadPosts$=createEffect(()=>{
     return this.actions$.pipe(
@@ -29,11 +36,41 @@ export class PostsEffects{
       ofType(addPost),
       mergeMap((action)=>{
         return this.postsService.addPost(action.post).pipe(
-          map((data)=>{
-            console.log(data);
+          map((data:any)=>{
+            const post={...action.post,id:data.name};
+            return addPostSuccess({ post} );
           })
         )
       })
     );
-  },{dispatch:false});
+  });
+
+
+  updatePost$=createEffect(()=>{
+    return this.actions$.pipe(
+      ofType(updatePost),
+      switchMap((action)=>{
+        return this.postsService.updatePost(action.post).pipe(
+          map((data)=>{
+            return updatePostSuccess({ post:action.post} );
+          })
+        )
+      })
+    );
+  });
+
+  deletePost$=createEffect(()=>{
+    return this.actions$.pipe(
+      ofType(deletePost),
+      switchMap((action)=>{
+        return this.postsService.deletePost(action.id).pipe(
+          map((data)=>{
+            return deletePostSuccess({ id:action.id} );
+          })
+        )
+      })
+    );
+  });
+
+
 }

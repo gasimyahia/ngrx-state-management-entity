@@ -18,7 +18,7 @@ export class PostListComponent implements OnInit {
 
   ngOnInit(): void {
     this.posts=this.store.select(getPosts);
-    this.store.dispatch(loadPosts())
+    this.store.dispatch(loadPosts());
   }
 
   onDeletePost(id:string){
