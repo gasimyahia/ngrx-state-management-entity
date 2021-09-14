@@ -43,6 +43,10 @@ export class postsService implements OnInit{
     return this.http.delete(`https://state-management-46abf-default-rtdb.firebaseio.com/posts/${id}.json`);
   }
 
+  getPostById(id:any):Observable<Post>{
+    return this.http.get<Post>(`https://state-management-46abf-default-rtdb.firebaseio.com/posts/${id}.json`);
+  }
+
 
 
   getPostsData():Post[]{

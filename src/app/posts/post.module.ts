@@ -10,13 +10,15 @@ import { PostListComponent } from "./post-list/post-list.component";
 import { PostsEffects } from "./state/posts.effects";
 import { postsReducer } from "./state/posts.reducer";
 import { POST_STATE_NAME } from "./state/posts.selector";
+import { PostDetialsComponent } from './post-detials/post-detials.component';
 
 export const routes: Routes = [
   {
     path:'',component:PostListComponent,
     children:[
       {path:'add',component:AddPostComponent},
-      {path:'edit/:id',component:EditComponent}
+      {path:'edit/:id',component:EditComponent},
+      {path:'detials/:id',component:PostDetialsComponent}
     ]
   }
 ];
@@ -24,7 +26,8 @@ export const routes: Routes = [
   declarations:[
     PostListComponent,
     AddPostComponent,
-    EditComponent
+    EditComponent,
+    PostDetialsComponent
   ],
   imports:[
     CommonModule,

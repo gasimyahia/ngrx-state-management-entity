@@ -1,0 +1,13 @@
+<div class="row">
+  <div class="col-md-12">
+    <h3>Post Details</h3>
+    <hr/>
+    <div *ngIf="post | async as postData">
+      <p>{{postData.id}}</p>
+      <p>{{postData.title}}</p>
+      <p>{{postData.description}}</p>
+    </div>
+    <!--case get data from state return back to home else get data from server-->
+    <div><a [routerLink]="['/posts']">Back to Posts</a></div>
+  </div>
+</div>

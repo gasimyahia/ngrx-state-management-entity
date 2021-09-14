@@ -14,6 +14,10 @@ import { LoadingSpinnerComponent } from './share/component/loading-spinner/loadi
 import { appReducer } from './store/app.state';
 import { AuthEffects } from './auth/state/auth.effects';
 import { AuthTokenInterceptor } from './service/authToken.interceptor';
+import { ErrorComponent } from './share/component/error/error.component';
+import { ServerErrorComponent } from './share/component/server-error/server-error.component';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { CustomSerializer } from './router/custom-serializer';
 
 @NgModule({
   declarations: [
@@ -21,6 +25,8 @@ import { AuthTokenInterceptor } from './service/authToken.interceptor';
     HomeComponent,
     HeaderComponent,
     LoadingSpinnerComponent,
+    ErrorComponent,
+    ServerErrorComponent,
   ],
   imports: [
     BrowserModule,
@@ -28,6 +34,9 @@ import { AuthTokenInterceptor } from './service/authToken.interceptor';
     HttpClientModule,
     EffectsModule.forRoot([AuthEffects]),
     StoreModule.forRoot(appReducer),
+    StoreRouterConnectingModule.forRoot({
+      serializer:CustomSerializer
+    }),
     // Instrumentation must be imported after importing StoreModule (config is optional)
     StoreDevtoolsModule.instrument({
       logOnly: environment.production, // Restrict extension to log-only mode
