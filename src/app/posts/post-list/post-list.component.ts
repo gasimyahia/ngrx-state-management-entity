@@ -5,7 +5,7 @@ import { Post } from 'src/app/models/posts.model';
 import { setLoadingSpinner } from 'src/app/share/component/state/shared.actions';
 import { AppState } from 'src/app/store/app.state';
 import { deletePost, loadPosts } from '../state/posts.actions';
-import { getPosts } from '../state/posts.selector';
+import { getCount, getPosts } from '../state/posts.selector';
 
 @Component({
   selector: 'app-post-list',
@@ -14,6 +14,7 @@ import { getPosts } from '../state/posts.selector';
 })
 export class PostListComponent implements OnInit {
   posts:Observable<Post[]>;
+  count:Observable<number>;
 
   constructor(private store:Store<AppState>) { }
 
@@ -21,6 +22,7 @@ export class PostListComponent implements OnInit {
     if(this.posts != null)
     this.store.dispatch(setLoadingSpinner({status:true}));
     this.posts=this.store.select(getPosts);
+    this.count=this.store.select(getCount);
     this.store.dispatch(loadPosts());
   }
 

@@ -30,3 +30,6 @@ export const signupSuccess=createAction(
 
 export const authLogin = createAction(AUTO_LOGIN_ACTION);
 export const autoLogout=createAction(LOGOUT_ACTION);
+
+// this action not do any thing
+export const dummyAction=createAction('[dummy action]');

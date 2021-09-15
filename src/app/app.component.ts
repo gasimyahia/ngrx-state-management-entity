@@ -10,7 +10,7 @@ import { AppState } from './store/app.state';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, AfterContentChecked{
+export class AppComponent implements OnInit{
   title = 'state-management-app';
   showLoading:Observable<boolean>;
   errorMessage:Observable<string>;
@@ -23,7 +23,5 @@ export class AppComponent implements OnInit, AfterContentChecked{
     this.store.dispatch(authLogin());
   }
 
-  ngAfterContentChecked() {
-    this.ref.detectChanges();
-}
+
 }

@@ -1,14 +1,17 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Update } from "@ngrx/entity";
 import { RouterNavigatedAction, ROUTER_NAVIGATION } from "@ngrx/router-store";
 import { Store } from "@ngrx/store";
-import { Observable } from "rxjs";
-import { filter, map, mergeMap, switchMap } from "rxjs/operators";
+import { Observable, of } from "rxjs";
+import { filter, map, mergeMap, switchMap, withLatestFrom } from "rxjs/operators";
+import { dummyAction } from "src/app/auth/state/auth.actions";
 import { Post } from "src/app/models/posts.model";
 import { postsService } from "src/app/service/posts.service";
 import { setLoadingSpinner } from "src/app/share/component/state/shared.actions";
 import { AppState } from "src/app/store/app.state";
 import { addPost, addPostSuccess, deletePost, deletePostSuccess, loadPosts, loadPostsSuccess, updatePost, updatePostSuccess } from "./posts.actions";
+import { getPosts } from "./posts.selector";
 
 @Injectable()
 
@@ -21,13 +24,17 @@ export class PostsEffects{
   loadPosts$=createEffect(()=>{
     return this.actions$.pipe(
       ofType(loadPosts),
-      mergeMap((action)=>{
-        return this.postsService.getPosts().pipe(
-          map((posts)=>{
-            this.store.dispatch(setLoadingSpinner({status:false}));
-            return loadPostsSuccess({posts});
-          })
-        );
+      withLatestFrom(this.store.select(getPosts)),
+      mergeMap(([action,posts])=>{
+        if(!posts.length || posts.length===1){
+          return this.postsService.getPosts().pipe(
+            map((posts)=>{
+              this.store.dispatch(setLoadingSpinner({status:false}));
+              return loadPostsSuccess({posts});
+            })
+          );
+        }
+        return of(dummyAction());
       })
     );
   }
@@ -55,7 +62,13 @@ export class PostsEffects{
       switchMap((action)=>{
         return this.postsService.updatePost(action.post).pipe(
           map((data)=>{
-            return updatePostSuccess({ post:action.post} );
+            const updatePost:Update<Post>={
+              id:action.post.id,
+              changes:{
+                ...action.post
+              }
+            }
+            return updatePostSuccess({ post:updatePost} );
           })
         )
       })
@@ -85,12 +98,18 @@ export class PostsEffects{
       map((r:RouterNavigatedAction)=>{
         return r.payload.routerState['params']['id'];
       }),
-      switchMap((id)=>{
-        return this.postsService.getPostById(id).pipe(
-          map((post)=>{
-            const postData=[{ ...post,id}];
-            return loadPostsSuccess({posts:postData});
-        }));
+      withLatestFrom(this.store.select(getPosts)),
+      switchMap(([id,posts])=>{
+        // given data  from api when loacal data is empty
+        if(!posts.length){
+          return this.postsService.getPosts().pipe(
+            map((post)=>{
+              const postData=[{ ...post,id}];
+              return loadPostsSuccess({posts:post});
+          }));
+        }
+        // return nathing
+        return of(dummyAction());
       })
     );
   });
